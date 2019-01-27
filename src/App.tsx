@@ -1,26 +1,52 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import styled from 'styled-components';
+import Login from './containers/Login';
+import MainContainer from './containers/MainContainer';
+import AuthService, { LOGIN_STATUS } from './services/AuthService';
 
-class App extends Component {
-  render() {
+const Root = styled.div`
+  @media only screen and (min-width: 768px) {
+    width: 1000px;
+    margin: 0 auto;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+    height: 100vh;
+  }
+  @media only screen and (max-width: 768px) {
+    width: 100vw;
+    height: 100vh;
+  }
+  padding: 2em;
+`;
+
+interface IAppState {
+  loginStatus: LOGIN_STATUS;
+}
+
+class App extends Component<{}, IAppState> {
+
+  constructor (props: any) {
+    super(props);
+    this.state = {
+      loginStatus: LOGIN_STATUS.CHECKING_STATUS
+    };
+  }
+
+  componentDidMount = async () => {
+    const loginStatus = await AuthService.getInstance().checkLoginStatus();
+    this.setState({
+      loginStatus
+    });
+  }
+
+  render () {
+    const { loginStatus } = this.state;
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <Root>
+        { loginStatus === LOGIN_STATUS.CHECKING_STATUS && <div>Loading..</div>}
+        { loginStatus === LOGIN_STATUS.LOGGED_OUT && <Login onLogin={this.forceUpdate}/> }
+        { loginStatus === LOGIN_STATUS.LOGGED_IN && <MainContainer>in</MainContainer> }
+      </Root>
     );
   }
 }
