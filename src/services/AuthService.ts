@@ -20,8 +20,8 @@ class AuthService {
     return AuthService.instance;
   }
 
-  public login = async (credentials: Credentials): Promise<boolean> => {
-    const body = JSON.stringify({credentials});
+  public login = async ({ username, password }: { username: string, password: string }): Promise<boolean> => {
+    const body = JSON.stringify({username, password});
     const res = await fetch(AuthService.API_URL + 'login', {
       method: 'POST',
       body,

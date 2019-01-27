@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { ApolloProvider } from 'react-apollo';
 import styled from 'styled-components';
 import Login from './containers/Login';
 import MainContainer from './containers/MainContainer';
+import client from './services/ApolloClient';
 import AuthService, { LOGIN_STATUS } from './services/AuthService';
 
 const Root = styled.div`
@@ -10,12 +12,11 @@ const Root = styled.div`
     margin: 0 auto;
     border-left: 1px solid gray;
     border-right: 1px solid gray;
-    height: 100vh;
   }
   @media only screen and (max-width: 768px) {
     width: 100vw;
-    height: 100vh;
   }
+  min-height: 100vh;
   padding: 2em;
 `;
 
@@ -30,6 +31,7 @@ class App extends Component<{}, IAppState> {
     this.state = {
       loginStatus: LOGIN_STATUS.CHECKING_STATUS
     };
+    this.onLogin = this.onLogin.bind(this);
   }
 
   componentDidMount = async () => {
@@ -39,14 +41,22 @@ class App extends Component<{}, IAppState> {
     });
   }
 
+  onLogin () {
+    this.setState({
+      loginStatus: LOGIN_STATUS.LOGGED_IN
+    });
+  }
+
   render () {
     const { loginStatus } = this.state;
     return (
-      <Root>
-        { loginStatus === LOGIN_STATUS.CHECKING_STATUS && <div>Loading..</div>}
-        { loginStatus === LOGIN_STATUS.LOGGED_OUT && <Login onLogin={this.forceUpdate}/> }
-        { loginStatus === LOGIN_STATUS.LOGGED_IN && <MainContainer>in</MainContainer> }
-      </Root>
+      <ApolloProvider client={client}>
+        <Root>
+          { loginStatus === LOGIN_STATUS.CHECKING_STATUS && <div>Loading..</div>}
+          { loginStatus === LOGIN_STATUS.LOGGED_OUT && <Login onLogin={this.onLogin}/> }
+          { loginStatus === LOGIN_STATUS.LOGGED_IN && <MainContainer>in</MainContainer> }
+        </Root>
+      </ApolloProvider>
     );
   }
 }
