@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import AuthService from '../../services/AuthService';
 
@@ -13,56 +13,39 @@ const LoginForm = styled.form`
   margin: 0 auto;
 `;
 
-interface ILoginState {
-  username: string;
-  password: string;
-  [key: string]: string;
-}
-
 interface ILoginProps {
   onLogin: () => void;
 }
 
-class Login extends React.Component<ILoginProps, ILoginState> {
+const Login = (props: ILoginProps) => {
 
-  constructor (props: any) {
-    super(props);
-    this.state = {
-      username: 'muu',
-      password: 'password123'
-    };
-  }
+  const [ loginInformation, setLoginInformation ] = useState({ username: 'muu', password: 'password123'});
 
-  handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const { username, password } = this.state;
+    const { username, password } = loginInformation;
     if (username && password) {
       const loggedIn = await AuthService.getInstance().login({ username, password });
       if (loggedIn) {
-        this.props.onLogin();
+        props.onLogin();
       }
     }
-  }
+  };
 
-  onChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const newState: ILoginState = this.state;
-    newState[event.currentTarget.name] = event.currentTarget.value;
-    this.setState(newState);
-  }
+  const onChange = (event: React.FormEvent<HTMLInputElement>) => {
+    setLoginInformation({ ...loginInformation, [event.currentTarget.name]: event.currentTarget.value });
+  };
 
-  render () {
-    const { username, password } = this.state;
-    return (
-      <LoginRoot>
-        <LoginForm onSubmit={this.handleLogin}>
-          <input name='username' value={username} onChange={this.onChange} />
-          <input name='password' value={password} onChange={this.onChange} />
-          <button />
-        </LoginForm>
-      </LoginRoot>
-    );
-  }
+  return (
+    <LoginRoot>
+      <LoginForm onSubmit={handleLogin}>
+        <input name='username' value={loginInformation.username} onChange={onChange} />
+        <input name='password' value={loginInformation.password} onChange={onChange} />
+        <button />
+      </LoginForm>
+    </LoginRoot>
+  );
 
-}
+};
 
 export default Login;

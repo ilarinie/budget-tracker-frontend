@@ -1,17 +1,22 @@
 import { Query } from 'react-apollo';
 
-interface UserData {
+export interface UserData {
   user: User;
 }
 
-interface User {
+export interface User {
   id: string;
   username: string;
   purchases: Purchase[];
   categories: PurchaseCategory[];
+  total: number;
+  monthlyPurchases: Purchase[];
+  monthlyExpendableIncome: number;
+  monthlyTotal: number;
+  monthlyRemaining: number;
 }
 
-interface Purchase {
+export interface Purchase {
   id: string;
   amount: number;
   created_at: Date;
@@ -20,7 +25,7 @@ interface Purchase {
   categories: PurchaseCategory[];
 }
 
-interface PurchaseCategory{
+export interface PurchaseCategory {
   id: string;
   name: string;
 }

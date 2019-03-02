@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { ApolloProvider } from 'react-apollo';
 import styled from 'styled-components';
 import Login from './containers/Login';
@@ -14,8 +14,10 @@ const Root = styled.div`
     border-right: 1px solid gray;
   }
   @media only screen and (max-width: 768px) {
-    width: 100vw;
+    width: calc(100vw - 4em);
+    max-width: calc(100vw - 4em);
   }
+  overflow-x: hidden;
   min-height: 100vh;
   padding: 2em;
 `;
@@ -24,41 +26,35 @@ interface IAppState {
   loginStatus: LOGIN_STATUS;
 }
 
-class App extends Component<{}, IAppState> {
+const App = (props: any) =>  {
 
-  constructor (props: any) {
-    super(props);
-    this.state = {
-      loginStatus: LOGIN_STATUS.CHECKING_STATUS
-    };
-    this.onLogin = this.onLogin.bind(this);
-  }
+  const initialStatus: LOGIN_STATUS = LOGIN_STATUS.CHECKING_STATUS;
+  const [ loginStatus, setLoginStatus ] = useState(initialStatus as LOGIN_STATUS);
+  useEffect(
+    () => {
+      checkLoginStatus();
+    },
+    [ loginStatus ]
+  );
 
-  componentDidMount = async () => {
-    const loginStatus = await AuthService.getInstance().checkLoginStatus();
-    this.setState({
-      loginStatus
-    });
-  }
+  const checkLoginStatus = async () => {
+    const loginStatus = await  AuthService.getInstance().checkLoginStatus();
+    setLoginStatus(loginStatus);
+  };
 
-  onLogin () {
-    this.setState({
-      loginStatus: LOGIN_STATUS.LOGGED_IN
-    });
-  }
+  const onLogin =  () => {
+    setLoginStatus(LOGIN_STATUS.LOGGED_IN);
+  };
 
-  render () {
-    const { loginStatus } = this.state;
-    return (
-      <ApolloProvider client={client}>
-        <Root>
-          { loginStatus === LOGIN_STATUS.CHECKING_STATUS && <div>Loading..</div>}
-          { loginStatus === LOGIN_STATUS.LOGGED_OUT && <Login onLogin={this.onLogin}/> }
-          { loginStatus === LOGIN_STATUS.LOGGED_IN && <MainContainer>in</MainContainer> }
-        </Root>
-      </ApolloProvider>
-    );
-  }
-}
+  return (
+    <ApolloProvider client={client}>
+      <Root>
+        { loginStatus === LOGIN_STATUS.CHECKING_STATUS && <div>Loading..</div>}
+        { loginStatus === LOGIN_STATUS.LOGGED_OUT && <Login onLogin={onLogin}/> }
+        { loginStatus === LOGIN_STATUS.LOGGED_IN && <MainContainer>in</MainContainer> }
+      </Root>
+    </ApolloProvider>
+  );
+};
 
 export default App;
