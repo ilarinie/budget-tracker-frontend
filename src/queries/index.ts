@@ -31,7 +31,7 @@ export const GET_USER = gql`
           name
         }
       }
-      monthlyExpendableIncome
+      monthlyIncome
       monthlyRemaining
     }
   }

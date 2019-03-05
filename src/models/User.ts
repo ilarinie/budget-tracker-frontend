@@ -1,4 +1,5 @@
 import { Query } from 'react-apollo';
+import { Purchase } from './Purchase';
 
 export interface UserData {
   user: User;
@@ -11,18 +12,9 @@ export interface User {
   categories: PurchaseCategory[];
   total: number;
   monthlyPurchases: Purchase[];
-  monthlyExpendableIncome: number;
+  monthlyIncome: number;
   monthlyTotal: number;
   monthlyRemaining: number;
-}
-
-export interface Purchase {
-  id: string;
-  amount: number;
-  created_at: Date;
-  updated_at: Date;
-  description: string;
-  categories: PurchaseCategory[];
 }
 
 export interface PurchaseCategory {

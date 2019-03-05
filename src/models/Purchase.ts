@@ -2,9 +2,9 @@ export class Purchase {
   id: string;
   description: string;
   amount: number;
-  created_at: Date;
-  updated_at: Date;
-  categories: {
+  created_at: number;
+  updated_at: number;
+  categories: [{
     name: string
-  };
+  }];
 }

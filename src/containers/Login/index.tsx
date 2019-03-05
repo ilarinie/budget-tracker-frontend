@@ -17,7 +17,7 @@ interface ILoginProps {
   onLogin: () => void;
 }
 
-const Login = (props: ILoginProps) => {
+const Login = React.memo((props: ILoginProps) => {
 
   const [ loginInformation, setLoginInformation ] = useState({ username: 'muu', password: 'password123'});
 
@@ -46,6 +46,6 @@ const Login = (props: ILoginProps) => {
     </LoginRoot>
   );
 
-};
+});
 
 export default Login;

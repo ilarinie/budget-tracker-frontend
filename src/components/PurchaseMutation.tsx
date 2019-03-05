@@ -24,7 +24,6 @@ const PurchaseForm = ({ addPurchase, categories }: { addPurchase: (params: any) 
     const description = (document.getElementById('desc') as HTMLInputElement).value;
     const category = (document.getElementById('category') as HTMLInputElement).value;
     const amount = parseFloat((document.getElementById('amount') as HTMLInputElement).value);
-    console.log('cat', category);
     addPurchase({ variables: { description, amount, categories: [category]} });
   };
 
